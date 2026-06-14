@@ -1,0 +1,17 @@
+[
+  { "id": "TXN-001", "accountId": "ACC-001", "type": "credit", "amount": 35000000, "currency": "VND", "category": "salary", "merchant": "Công ty TNHH Tech", "status": "success", "timestamp": "2026-06-05T08:00:00Z", "note": "Lương tháng 5/2026" },
+  { "id": "TXN-002", "accountId": "ACC-001", "type": "debit", "amount": 15000000, "currency": "VND", "category": "transfer", "merchant": "Chuyển tiền tiết kiệm", "status": "success", "timestamp": "2026-06-05T09:15:00Z", "note": "Tích lũy định kỳ" },
+  { "id": "TXN-003", "accountId": "ACC-003", "type": "debit", "amount": 45000, "currency": "VND", "category": "food", "merchant": "Highlands Coffee", "status": "success", "timestamp": "2026-06-06T07:30:00Z", "note": "Cà phê sáng" },
+  { "id": "TXN-004", "accountId": "ACC-001", "type": "debit", "amount": 1250000, "currency": "VND", "category": "bill", "merchant": "EVN HCMC", "status": "success", "timestamp": "2026-06-07T10:00:00Z", "note": "Thanh toán tiền điện tháng 5" },
+  { "id": "TXN-005", "accountId": "ACC-003", "type": "debit", "amount": 650000, "currency": "VND", "category": "shopping", "merchant": "Shopee VN", "status": "success", "timestamp": "2026-06-08T20:15:00Z", "note": "Mua sắm online" },
+  { "id": "TXN-006", "accountId": "ACC-001", "type": "debit", "amount": 250000, "currency": "VND", "category": "bill", "merchant": "Viettel Telecom", "status": "success", "timestamp": "2026-06-09T09:00:00Z", "note": "Internet cáp quang" },
+  { "id": "TXN-007", "accountId": "ACC-003", "type": "debit", "amount": 120000, "currency": "VND", "category": "food", "merchant": "GrabFood", "status": "success", "timestamp": "2026-06-10T12:30:00Z", "note": "Ăn trưa" },
+  { "id": "TXN-008", "accountId": "ACC-001", "type": "debit", "amount": 850000, "currency": "VND", "category": "health", "merchant": "Pharmacity", "status": "success", "timestamp": "2026-06-11T18:45:00Z", "note": "Mua thực phẩm chức năng" },
+  { "id": "TXN-009", "accountId": "ACC-004", "type": "debit", "amount": 15.99, "currency": "USD", "category": "entertainment", "merchant": "Netflix", "status": "success", "timestamp": "2026-06-12T01:00:00Z", "note": "Gia hạn Premium" },
+  { "id": "TXN-010", "accountId": "ACC-001", "type": "debit", "amount": 2000000, "currency": "VND", "category": "travel", "merchant": "Vietnam Airlines", "status": "success", "timestamp": "2026-06-12T14:20:00Z", "note": "Vé máy bay SGN-HAN" },
+  { "id": "TXN-011", "accountId": "ACC-003", "type": "credit", "amount": 500000, "currency": "VND", "category": "transfer", "merchant": "Nguyễn Văn A", "status": "success", "timestamp": "2026-06-13T09:10:00Z", "note": "Trả tiền ăn tối" },
+  { "id": "TXN-012", "accountId": "ACC-001", "type": "debit", "amount": 350000, "currency": "VND", "category": "education", "merchant": "Coursera", "status": "success", "timestamp": "2026-06-13T15:00:00Z", "note": "Khóa học Data Science" },
+  { "id": "TXN-013", "accountId": "ACC-003", "type": "debit", "amount": 55000, "currency": "VND", "category": "food", "merchant": "Circle K", "status": "success", "timestamp": "2026-06-13T22:15:00Z", "note": "Ăn đêm" },
+  { "id": "TXN-014", "accountId": "ACC-004", "type": "debit", "amount": 50.00, "currency": "USD", "category": "investment", "merchant": "Binance", "status": "success", "timestamp": "2026-06-14T08:30:00Z", "note": "Mua BTC" },
+  { "id": "TXN-015", "accountId": "ACC-001", "type": "debit", "amount": 150000, "currency": "VND", "category": "travel", "merchant": "GrabCar", "status": "success", "timestamp": "2026-06-14T09:45:00Z", "note": "Di chuyển sân bay" }
+]

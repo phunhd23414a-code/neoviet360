@@ -1,0 +1,52 @@
+[
+  {
+    "id": "ACC-001",
+    "type": "checking",
+    "name": "TK Thanh toán VND",
+    "accountNumber": "0123 **** **** 5678",
+    "balance": 45230000,
+    "currency": "VND",
+    "isDefault": true,
+    "color": "#1a56db"
+  },
+  {
+    "id": "ACC-002",
+    "type": "savings",
+    "name": "Tiết kiệm Phát lộc 6T",
+    "accountNumber": "0123 **** **** 9999",
+    "balance": 100000000,
+    "currency": "VND",
+    "isDefault": false,
+    "color": "#047857"
+  },
+  {
+    "id": "ACC-003",
+    "type": "wallet",
+    "name": "Ví NeoViet",
+    "accountNumber": "0901***567",
+    "balance": 2500000,
+    "currency": "VND",
+    "isDefault": false,
+    "color": "#e02424"
+  },
+  {
+    "id": "ACC-004",
+    "type": "fx",
+    "name": "USD Account",
+    "accountNumber": "USD **** 1234",
+    "balance": 2450.50,
+    "currency": "USD",
+    "isDefault": false,
+    "color": "#374151"
+  },
+  {
+    "id": "ACC-005",
+    "type": "fx",
+    "name": "EUR Account",
+    "accountNumber": "EUR **** 5678",
+    "balance": 1200.00,
+    "currency": "EUR",
+    "isDefault": false,
+    "color": "#7e3af2"
+  }
+]

@@ -1,0 +1,6 @@
+[
+  { "id": "EVN", "name": "Điện lực toàn quốc (EVN)", "category": "electricity", "icon": "zap" },
+  { "id": "SAWACO", "name": "Cấp nước sinh hoạt", "category": "water", "icon": "droplet" },
+  { "id": "VIETTEL", "name": "Internet & Cáp quang", "category": "wifi", "icon": "wifi" },
+  { "id": "VETC", "name": "Thu phí không dừng (VETC)", "category": "car", "icon": "car" }
+]

@@ -1,0 +1,6 @@
+[
+  { "id": "PRD-01", "name": "Thẻ tín dụng NeoViet Platinum", "type": "card", "desc": "Hoàn tiền 5% mọi giao dịch AI. Miễn phí thường niên trọn đời.", "highlight": "Khuyên dùng" },
+  { "id": "PRD-02", "name": "Gói Đầu tư Đa tài sản", "type": "invest", "desc": "AI tự động phân bổ vốn vào Cổ phiếu, Trái phiếu & Crypto.", "highlight": "Lợi nhuận ~15%/năm" },
+  { "id": "PRD-03", "name": "Bảo hiểm Rủi ro Không gian mạng", "type": "insurance", "desc": "Bảo vệ toàn diện tài sản số và giao dịch trực tuyến.", "highlight": "Chỉ 10.000đ/tháng" },
+  { "id": "PRD-04", "name": "Vay tiêu dùng siêu tốc", "type": "loan", "desc": "Phê duyệt bằng AI trong 3 giây. Không cần chứng minh thu nhập.", "highlight": "Lãi suất 8.5%" }
+]

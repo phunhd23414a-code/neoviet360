@@ -1,0 +1,6 @@
+[
+  { "symbol": "VCB", "name": "Ngân hàng TMCP Ngoại thương VN", "price": 92500, "change": 1.2, "volume": 1250400 },
+  { "symbol": "FPT", "name": "Công ty Cổ phần FPT", "price": 115000, "change": 2.5, "volume": 2100500 },
+  { "symbol": "HPG", "name": "Tập đoàn Hòa Phát", "price": 28450, "change": -0.5, "volume": 15400200 },
+  { "symbol": "VNM", "name": "Vinamilk", "price": 68200, "change": 0.8, "volume": 3200100 }
+]

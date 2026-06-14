@@ -1,0 +1,6 @@
+[
+  { "id": "bitcoin", "symbol": "BTC", "name": "Bitcoin", "price_usd": 67420.50, "change_24h": 2.34 },
+  { "id": "ethereum", "symbol": "ETH", "name": "Ethereum", "price_usd": 3540.20, "change_24h": -1.12 },
+  { "id": "solana", "symbol": "SOL", "name": "Solana", "price_usd": 145.80, "change_24h": 5.40 },
+  { "id": "binancecoin", "symbol": "BNB", "name": "BNB", "price_usd": 590.15, "change_24h": 0.85 }
+]

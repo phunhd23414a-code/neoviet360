@@ -1,0 +1,87 @@
+/* Tracking chữ hiện đại */
+h1, h2, h3, h4 { letter-spacing: 0; }
+.hero-balance { letter-spacing: -0.01em; }
+
+/* Scrollbar sát mép */
+.native-scrollbar::-webkit-scrollbar { width: 8px; }
+.native-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.native-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+.native-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Lớp Glassmorphism Cao Cấp (Dùng cho Header & Layer phụ) */
+.glass-layer {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* --- PHÂN TẦNG THỊ GIÁC (DEPTH HIERARCHY) --- */
+
+/* Layer 1: Nổi bật nhất (Hero, Recent Activity) */
+.layer-primary {
+    background: rgba(16, 25, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(30px);
+}
+
+/* Layer 2: Insight / Analytics (Chìm hơn một chút) */
+.layer-secondary {
+    background: rgba(12, 23, 40, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+}
+
+/* Layer 3: Utility (Thẻ chức năng) */
+.layer-tertiary {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.layer-tertiary:hover {
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.4);
+}
+
+/* --- HIỆU ỨNG ĐẶC BIỆT --- */
+
+/* Lõi Hero Card */
+.hero-core {
+    background: linear-gradient(135deg, #10254A 0%, #163F7A 50%, #00AEEF 100%);
+    box-shadow: 
+        0 20px 50px -15px rgba(0, 174, 239, 0.3),
+        inset 0 0 40px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+/* Sóng năng lượng (Energy Wave) */
+.energy-wave {
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 100%;
+    background: radial-gradient(circle at 50% 120%, rgba(0, 245, 255, 0.2) 0%, transparent 60%);
+    opacity: 0.6;
+}
+/* Hạt trôi nổi (Floating Particles) */
+@keyframes float {
+    0% { transform: translateY(0px); opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { transform: translateY(-40px); opacity: 0; }
+}
+.particle { position: absolute; background: white; border-radius: 50%; animation: float 4s infinite ease-in; }
+
+/* Lưới tinh tế cho Biểu đồ */
+.chart-grid {
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+.card-3d-wrap { perspective: 1000px; }
+.card-3d-inner { transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+.card-3d-wrap:hover .card-3d-inner { transform: rotateY(180deg); }
+.card-front, .card-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.card-back { transform: rotateY(180deg); }

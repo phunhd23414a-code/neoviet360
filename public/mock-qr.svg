@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="16" fill="#ffffff" stroke="#e5e7eb" stroke-width="2"/>
+  <g transform="translate(20, 20)">
+    <path d="M0 0h40v40H0z m10 10h20v20H10z m5 5h10v10h-10z" fill="#1a56db"/>
+    <path d="M120 0h40v40h-40z m10 10h20v20h-20z m5 5h10v10h-10z" fill="#1a56db"/>
+    <path d="M0 120h40v40H0z m10 10h20v20H10z m5 5h10v10h-10z" fill="#1a56db"/>
+    
+    <path d="M50 0h10v10H50z M70 0h10v10H70z M90 0h10v10H90z M110 0h10v10h-10z M50 20h20v10H50z M80 20h30v10H80z M50 40h10v10H50z M70 40h20v10H70z M100 40h10v10h-10z M0 50h10v10H0z M20 50h20v10H20z M50 50h30v10H50z M90 50h10v10H90z M120 50h20v10h-20z M150 50h10v10h-10z M0 70h20v10H0z M30 70h10v10H30z M50 70h20v10H50z M80 70h10v10H80z M120 70h10v10h-10z M140 70h20v10h-20z M0 90h10v10H0z M20 90h30v10H20z M60 90h10v10H60z M120 90h30v10h-30z M160 90h20v10h-20z M50 110h20v10H50z M80 110h10v10H80z M100 110h30v10h-30z M140 110h20v10h-20z M50 130h10v10H50z M70 130h20v10H70z M100 130h10v10h-10z M120 130h20v10h-20z M150 130h10v10h-10z M50 150h30v10H50z M90 150h10v10H90z M110 150h30v10h-30z M150 150h10v10h-10z" fill="#374151"/>
+    
+    <path d="M100 70h10v10h-10z M110 50h10v10h-10z M60 150h10v10H60z M140 150h10v10h-10z M80 90h10v10H80z" fill="#e02424"/>
+    
+    <rect x="65" y="65" width="30" height="30" rx="8" fill="#ffffff" stroke="#1a56db" stroke-width="2"/>
+    <circle cx="80" cy="80" r="8" fill="#1a56db" />
+  </g>
+</svg>

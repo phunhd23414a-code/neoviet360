@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoViet 360 - AI Financial Platform</title>
+    <link rel="icon" type="image/svg+xml" href="./public/favicon.svg">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'] 
+                    },
+                    colors: {
+                        ai: {
+                            bg: '#07111F',        // Nền tối không gian sâu
+                            surface: '#0C1728',   // Bề mặt lớp nền phụ
+                            card: '#0F1A2E',      // Bề mặt các tấm thẻ thông tin
+                            hover: '#13223B',     // Trạng thái hover của thẻ
+                            primary: '#00BCD4',   // Màu Cyan đặc trưng đã giảm độ bão hòa
+                            accent: '#00D4FF',    // Màu Cyan phát quang nhẹ
+                            highlight: '#7DF9FF', // Điểm nhấn ánh sáng rực rỡ
+                            text: '#F8FAFC',      // Chữ chính trắng sáng
+                            muted: '#8B9BB4',     // Chữ phụ/mờ xám xanh
+                            border: 'rgba(0, 212, 255, 0.06)' // Viền phát quang mảnh
+                        },
+                        status: {
+                            success: '#00E676',   // Xanh ngọc thu nhập (Income)
+                            warning: '#FFB800',   // Vàng hóa đơn (Bills)
+                            premium: '#A855F7',   // Tím đầu tư nâng cao (Investment)
+                            insight: '#7C4DFF',   // Tím xanh phân tích chuyên sâu
+                            alert: '#FF5F56',     // Đỏ san hô chi tiêu (Expense)
+                            highlight: '#00F5FF'  // Lõi phát sáng AI Core
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="./styles/globals.css">
+</head>
+<body class="bg-ai-bg text-ai-text font-sans antialiased selection:bg-status-highlight/30 selection:text-white min-h-screen relative native-scrollbar">
+    
+    <div class="fixed inset-0 z-0 pointer-events-none mix-blend-screen opacity-60">
+        <div class="absolute top-[-15%] left-[-5%] w-[800px] h-[800px] bg-[#00D4FF] rounded-full blur-[200px] opacity-[0.04]"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[700px] h-[700px] bg-[#7C4DFF] rounded-full blur-[250px] opacity-[0.05]"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-[900px] h-[900px] bg-[#3B82F6] rounded-full blur-[300px] opacity-[0.03]"></div>
+    </div>
+
+    <div id="app" class="hidden relative z-10 flex flex-col min-h-screen">
+        
+        <header id="header-container" class="glass-layer sticky top-0 z-50"></header>
+        
+        <main id="main-content" class="flex-1 w-full px-4 sm:px-8 xl:px-12 py-10"></main>
+        
+    </div>
+
+    <div id="auth-layout" class="relative z-10 min-h-screen flex items-center justify-center p-4"></div>
+
+    <button onclick="router.navigate('chatbot')" class="fixed bottom-8 right-8 z-[100] w-16 h-16 rounded-full bg-status-highlight/10 border border-status-highlight/40 flex items-center justify-center backdrop-blur-xl shadow-[0_0_30px_rgba(0,245,255,0.2)] hover:shadow-[0_0_50px_rgba(0,245,255,0.5)] hover:bg-status-highlight/20 transition-all duration-300 hover:scale-105 group">
+      <div class="absolute inset-0 rounded-full border border-status-highlight/50 animate-[ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite] opacity-50 pointer-events-none"></div>
+      <i data-lucide="bot" class="w-7 h-7 text-status-highlight group-hover:animate-pulse"></i>
+      
+      <div class="absolute right-20 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-ai-surface border border-white/10 rounded-lg backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+        <span class="text-[12px] font-mono text-status-highlight tracking-widest">HỎI GEMINI AI</span>
+      </div>
+    </button>
+    
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <div id="modal-container" class="relative z-50 hidden"></div>
+
+
+    <script src="./config.js"></script>
+    <script src="./utils/state.js"></script>
+    <script src="./utils/format.js"></script>
+    <script src="./utils/mockDelay.js"></script>
+    <script src="./utils/api.js"></script>
+    <script src="./utils/auth.js"></script>
+    <script src="./utils/router.js"></script>
+    
+    <script src="./components/Chart.js"></script>
+    <script src="./components/Header.js"></script>
+    
+    <script src="./pages/LoginPage.js"></script>
+    <script src="./pages/RegisterPage.js"></script>
+    <script src="./pages/EkycPage.js"></script>
+    <script src="./pages/DashboardPage.js"></script>
+    <script src="./pages/ActivityPage.js"></script>
+    <script src="./pages/PaymentsPage.js"></script>
+    <script src="./pages/InsightsPage.js"></script>
+    
+    <script src="./banking/accounts.js"></script>
+    <script src="./banking/transfer.js"></script>
+    <script src="./banking/savings.js"></script>
+    <script src="./banking/accounts.js"></script>
+    <script src="./banking/savings.js"></script>
+    <script src="./banking/loan.js"></script>
+    <script src="./banking/cards.js"></script>
+    <script src="./banking/invest.js"></script>
+
+    <script src="./payment/qr-pay.js"></script>
+    <script src="./payment/bill-pay.js"></script>
+    <script src="./payment/ewallet.js"></script>
+    <script src="./payment/topup.js"></script>
+    <script src="./global/fx-exchange.js"></script>
+    <script src="./global/crypto.js"></script>
+    
+    <script src="./ecosystem/chatbot.js"></script>
+    <script src="./ecosystem/marketplace.js"></script>
+    <script src="./analytics/spending.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Khởi tạo luồng kiểm tra session và chuyển hướng trang
+        router.init();
+      });
+    </script>
+</body>
+</html>
