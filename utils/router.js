@@ -1,34 +1,44 @@
 // neoviet360/utils/router.js
 const router = {
   navigate: (page) => {
+    if (state.currentPage === page && page !== 'login' && page !== 'register') return;
     state.currentPage = page;
     const appContainer = document.getElementById('app');
     const authContainer = document.getElementById('auth-layout');
 
     if (page === 'login' || page === 'register') {
+      // Chỉ giữ một màn hình xác thực duy nhất.
+      // Mọi request tới register đều gom về login để tránh xuất hiện 2 trang đăng nhập/xác thực.
+      state.currentPage = 'login';
+      if (window.location.hash !== '#/login') {
+        window.location.hash = '#/login';
+      }
+
       appContainer.classList.add('hidden');
       authContainer.classList.remove('hidden');
-      authContainer.innerHTML = ''; 
-      
-      if (page === 'login') LoginPage.render(authContainer);
-      if (page === 'register') RegisterPage.render(authContainer);
+      authContainer.innerHTML = '';
+      LoginPage.render(authContainer);
     } else {
-      if (!auth.isLoggedIn()) {
-        router.navigate('login');
-        return;
-      }
+      // 2. Kích hoạt chốt chặn an ninh nội bộ trước khi render bất kỳ trang Core Banking nào
+      auth.checkProtection();
       
-      authContainer.classList.add('hidden');
+      if (!auth.isLoggedIn()) return; // Dừng luồng nếu không có token hợp lệ
+
       appContainer.classList.remove('hidden');
+      authContainer.classList.add('hidden');
       
       const mainContent = document.getElementById('main-content');
-      
-      // Gọi Header một lần cho tất cả các trang
-      Header.render(document.getElementById('header-container'), page);
+      const headerContainer = document.getElementById('header-container');
+      Header.render(headerContainer, page);
+      if (window.BottomNav) {
+        BottomNav.render(document.getElementById('bottom-nav-container'), page);
+      }
       
       // Khối định tuyến Phase 3
       if (page === 'dashboard') {
         DashboardPage.render(mainContent);
+      } else if (page === 'ekyc') {
+        EkycPage.render(mainContent);
       } else if (page === 'accounts') {
         AccountsPage.render(mainContent);
       } else if (page === 'transfer') {
@@ -42,31 +52,26 @@ const router = {
       } else if (page === 'invest') {
         InvestPage.render(mainContent);
       } else if (page === 'qr-pay') {
-        Header.render(document.getElementById('header-container'), page);
         QRPayPage.render(mainContent);
       } else if (page === 'bill-pay') {
-        Header.render(document.getElementById('header-container'), page);
         BillPayPage.render(mainContent);
+      } else if (page === 'scheduled') {
+        ScheduledPage.render(mainContent);
+      } else if (page === 'split-bill') {
+        SplitBillPage.render(mainContent);
       } else if (page === 'ewallet') {
-        Header.render(document.getElementById('header-container'), page);
         EwalletPage.render(mainContent);
       } else if (page === 'topup') {
-        Header.render(document.getElementById('header-container'), page);
         TopupPage.render(mainContent);
       } else if (page === 'fx-exchange') {
-        Header.render(document.getElementById('header-container'), page);
         FxExchangePage.render(mainContent);
       } else if (page === 'crypto') {
-        Header.render(document.getElementById('header-container'), page);
         CryptoPage.render(mainContent);
       } else if (page === 'chatbot') {
-        Header.render(document.getElementById('header-container'), page);
         ChatbotPage.render(mainContent);
       } else if (page === 'spending') {
-        Header.render(document.getElementById('header-container'), page);
         SpendingPage.render(mainContent);
       } else if (page === 'marketplace') {
-        Header.render(document.getElementById('header-container'), page);
         MarketplacePage.render(mainContent);
       } else if (page === 'activity') {
         ActivityPage.render(mainContent);
@@ -74,6 +79,16 @@ const router = {
         PaymentsPage.render(mainContent);
       } else if (page === 'insights') {
         InsightsPage.render(mainContent);
+      } else if (page === 'rewards') {
+        RewardsPage.render(mainContent);
+      } else if (page === 'carbon') {
+        CarbonPage.render(mainContent);
+      } else if (page === 'profile') {
+        ProfilePage.render(mainContent);
+      } else if (page === 'settings') {
+        SettingsPage.render(mainContent);
+      } else if (page === 'security') {
+        SecurityPage.render(mainContent);
       } else {
         // Fallback an toàn nếu bấm nhầm
         mainContent.innerHTML = `<div class="p-10 text-center text-ai-muted font-mono">Module [${page}] đang được phát triển.</div>`;
@@ -82,11 +97,36 @@ const router = {
     }
   },
   
-  init: () => {
-    if (auth.isLoggedIn()) {
-      router.navigate('dashboard');
-    } else {
+  init: async () => {
+    try {
+      // Chỉ khôi phục session đã tồn tại, tuyệt đối không tự tạo user mock khi tải trang.
+      if (window.auth && typeof auth.initSession === 'function') {
+        await auth.initSession();
+      }
+
+      if (auth.isLoggedIn()) {
+        // Khởi tạo dữ liệu state từ mock data
+        await state.initData();
+        
+        // 1. Đọc trực tiếp đường dẫn trên thanh URL khi F5
+        const hash = window.location.hash.replace('#/', '');
+        const page = hash ? hash : 'dashboard';
+        router.navigate(page);
+      } else {
+        router.navigate('login');
+      }
+    } catch (err) {
+      console.error('Router init error:', err);
+      // Fallback to login if something goes wrong during init
       router.navigate('login');
     }
+    
+    // 2. Lắng nghe khi người dùng gõ URL mới hoặc bấm nút Back/Forward của trình duyệt
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.replace('#/', '');
+      router.navigate(hash || 'login');
+    });
   }
 };
+
+window.router = router;

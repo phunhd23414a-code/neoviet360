@@ -18,7 +18,7 @@ const AccountsPage = {
               <div class="card-front absolute w-full h-full rounded-2xl p-6 flex flex-col justify-between" 
                    style="background: linear-gradient(135deg, ${mainAcc.color} 0%, #0F1A2E 100%); border: 1px solid rgba(255,255,255,0.1);">
                 <div class="flex justify-between items-start">
-                  <i data-lucide="contactless-payment" class="w-8 h-8 text-white/80"></i>
+                  <i data-lucide="contact" class="w-8 h-8 text-white/80"></i>
                   <img src="./public/logo.svg" class="h-5 opacity-80 filter brightness-0 invert">
                 </div>
                 <div>

@@ -13,7 +13,7 @@ const ChatbotPage = {
             </div>
             <div>
               <h2 class="text-xl font-bold text-white tracking-wide">Trợ lý AI NeoViet</h2>
-              <p class="text-[11px] font-mono text-status-highlight uppercase tracking-widest mt-0.5">Gemini 2.0 Flash Core</p>
+              <p class="text-[11px] font-mono text-status-highlight uppercase tracking-widest mt-0.5">Được hỗ trợ bởi Gemini 2.0</p>
             </div>
           </div>
         </div>
@@ -34,6 +34,9 @@ const ChatbotPage = {
 
           <div class="p-4 bg-ai-surface border-t border-white/5 relative z-10">
             <form id="chat-form" class="flex items-center gap-3">
+              <button type="button" id="btn-voice-chat" class="w-14 h-14 rounded-xl bg-white/5 hover:bg-white/10 text-ai-muted border border-white/10 flex items-center justify-center transition-all shrink-0">
+                <i data-lucide="mic" class="w-5 h-5"></i>
+              </button>
               <input type="text" id="chat-input" placeholder="Hỏi AI về quản lý chi tiêu, đầu tư..." required autocomplete="off"
                      class="flex-1 bg-[#07111F] border border-white/10 rounded-xl px-5 py-4 text-[14px] text-white placeholder-ai-muted outline-none focus:border-status-highlight/50 transition-colors">
               <button type="submit" id="btn-send-chat" class="w-14 h-14 rounded-xl bg-status-highlight/20 hover:bg-status-highlight/30 text-status-highlight border border-status-highlight/50 flex items-center justify-center transition-all shadow-[0_0_15px_rgba(0,245,255,0.1)] shrink-0">
@@ -74,6 +77,55 @@ const ChatbotPage = {
   },
 
   bindEvents: () => {
+    const voiceBtn = document.getElementById('btn-voice-chat');
+    const chatInput = document.getElementById('chat-input');
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'vi-VN';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      let isListening = false;
+
+      voiceBtn.addEventListener('click', () => {
+        if (!isListening) {
+          recognition.start();
+        } else {
+          recognition.stop();
+        }
+      });
+
+      recognition.onstart = () => {
+        isListening = true;
+        voiceBtn.classList.add('bg-status-alert/20', 'text-status-alert', 'border-status-alert/50', 'animate-pulse');
+        voiceBtn.innerHTML = '<i data-lucide="mic-off" class="w-5 h-5"></i>';
+        lucide.createIcons();
+        chatInput.placeholder = "Đang nghe...";
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        chatInput.value = transcript;
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        voiceBtn.classList.remove('bg-status-alert/20', 'text-status-alert', 'border-status-alert/50', 'animate-pulse');
+        voiceBtn.innerHTML = '<i data-lucide="mic" class="w-5 h-5"></i>';
+        lucide.createIcons();
+        chatInput.placeholder = "Hỏi AI về quản lý chi tiêu, đầu tư...";
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        recognition.stop();
+      };
+    } else {
+      voiceBtn.style.display = 'none';
+    }
+
     document.getElementById('chat-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const input = document.getElementById('chat-input');

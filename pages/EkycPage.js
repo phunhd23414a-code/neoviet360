@@ -4,12 +4,12 @@ const EkycPage = {
     container.innerHTML = `
       <div class="max-w-md mx-auto w-full pt-10 animate__animated animate__fadeIn">
         <div class="text-center mb-8">
-          <div class="inline-flex items-center gap-2 bg-status-highlight/10 px-3 py-1.5 rounded-full border border-status-highlight/20 mb-4">
-            <div class="w-2 h-2 bg-status-highlight rounded-full animate-pulse"></div>
-            <span class="text-[11px] font-mono text-status-highlight tracking-widest uppercase">Identity_Matrix</span>
-          </div>
-          <h2 class="text-2xl font-bold text-white tracking-wide">Xác thực Sinh trắc học</h2>
-          <p class="text-sm text-ai-muted mt-2">Hệ thống AI cần xác minh danh tính của bạn</p>
+           <div class="inline-flex items-center gap-2 bg-status-highlight/10 px-3 py-1.5 rounded-full border border-status-highlight/20 mb-4" aria-hidden="true">
+             <div class="w-2 h-2 bg-status-highlight rounded-full animate-pulse"></div>
+             <span class="text-[11px] font-mono text-status-highlight tracking-widest uppercase">Identity_Matrix</span>
+           </div>
+           <h2 class="text-2xl font-bold text-white tracking-wide">Xác thực Sinh trắc học</h2>
+           <p class="text-sm text-ai-muted mt-2">Hệ thống AI cần xác minh danh tính của bạn</p>
         </div>
 
         <div class="layer-primary rounded-3xl p-8 relative overflow-hidden">
@@ -24,15 +24,15 @@ const EkycPage = {
                <i data-lucide="scan-face" class="w-16 h-16 text-status-highlight drop-shadow-[0_0_10px_rgba(0,245,255,0.5)]"></i>
             </div>
             
-            <div class="mt-8 text-center" id="ekyc-status">
-              <h3 class="font-bold text-white mb-1">Bước 1: Quét khuôn mặt</h3>
-              <p class="text-xs text-ai-muted">Vui lòng nhìn thẳng vào camera</p>
-            </div>
-          </div>
+             <div class="mt-8 text-center" id="ekyc-status" role="status" aria-live="polite">
+               <h3 class="font-bold text-white mb-1">Bước 1: Quét khuôn mặt</h3>
+               <p class="text-xs text-ai-muted">Vui lòng nhìn thẳng vào camera</p>
+             </div>
+           </div>
 
-          <button id="btn-scan" class="w-full relative z-10 bg-white/10 hover:bg-status-highlight/20 text-white border border-status-highlight/30 py-3.5 rounded-xl font-semibold transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.2)] mt-6">
-            Bắt đầu quét
-          </button>
+           <button id="btn-scan" class="w-full relative z-10 bg-white/10 hover:bg-status-highlight/20 text-white border border-status-highlight/30 py-3.5 rounded-xl font-semibold transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.2)] mt-6" aria-label="Bắt đầu quét sinh trắc học">
+             Bắt đầu quét
+           </button>
         </div>
       </div>
     `;

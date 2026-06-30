@@ -15,8 +15,8 @@ const EwalletPage = {
               <div class="text-[40px] font-extrabold text-white drop-shadow-[0_0_15px_rgba(255,184,0,0.3)]">2.500.000 ₫</div>
             </div>
             <div class="relative z-10 flex gap-4 mt-8">
-              <button class="flex-1 bg-status-warning/20 hover:bg-status-warning/30 text-status-warning border border-status-warning/40 py-3 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(255,184,0,0.1)]">Nạp Tiền</button>
-              <button class="flex-1 layer-tertiary text-white py-3 rounded-xl font-bold transition-all hover:border-white/20">Rút Tiền</button>
+              <button id="btn-ewallet-topup" class="flex-1 bg-status-warning/20 hover:bg-status-warning/30 text-status-warning border border-status-warning/40 py-3 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(255,184,0,0.1)]">Nạp Tiền</button>
+              <button id="btn-ewallet-withdraw" class="flex-1 layer-tertiary text-white py-3 rounded-xl font-bold transition-all hover:border-white/20">Rút Tiền</button>
             </div>
           </div>
 
@@ -34,5 +34,120 @@ const EwalletPage = {
       </div>
     `;
     lucide.createIcons();
+    EwalletPage.bindEvents();
+  },
+
+  bindEvents: () => {
+    document.getElementById('btn-ewallet-topup')?.addEventListener('click', async () => {
+      const btn = document.getElementById('btn-ewallet-topup');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> ĐANG XỬ LÝ...';
+      
+      const topupAmount = Math.floor(Math.random() * 5000000) + 500000;
+
+      try {
+        await api.payments.ewallet({
+          amount: topupAmount,
+          action: "TOPUP",
+          accountId: state.accounts?.[0]?.id
+        });
+
+        Modal.open(`
+          <div class="p-6 text-center border-b border-white/5 relative">
+            <button onclick="Modal.close()" class="absolute top-6 right-6 text-ai-muted hover:text-white transition-colors">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full bg-status-success/20 border border-status-success/30 flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="check-circle" class="w-8 h-8 text-status-success"></i>
+            </div>
+            <h3 class="text-white text-lg font-bold mb-1">Nạp Tiền Ví Thành Công</h3>
+            <p class="text-[14px] text-ai-muted">Bạn đã nạp thành công ${formatUtils.currency(topupAmount, 'VND')} vào ví điện tử.</p>
+          </div>
+          <div class="p-6 bg-white/5">
+            <button onclick="Modal.close();" class="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition-all">
+              ĐÓNG
+            </button>
+          </div>
+        `);
+      } catch (error) {
+        Modal.open(`
+          <div class="p-6 text-center border-b border-white/5 relative">
+            <button onclick="Modal.close()" class="absolute top-6 right-6 text-ai-muted hover:text-white transition-colors">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full bg-status-error/20 border border-status-error/30 flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="alert-circle" class="w-8 h-8 text-status-error"></i>
+            </div>
+            <h3 class="text-white text-lg font-bold mb-1">Nạp Tiền Ví Thất Bại</h3>
+            <p class="text-[14px] text-ai-muted">${error.message || 'Không thể nạp tiền ví lúc này.'}</p>
+          </div>
+          <div class="p-6 bg-white/5">
+            <button onclick="Modal.close();" class="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition-all">
+              ĐÓNG
+            </button>
+          </div>
+        `);
+      }
+      lucide.createIcons();
+
+      btn.disabled = false;
+      btn.innerHTML = 'Nạp Tiền';
+    });
+
+    document.getElementById('btn-ewallet-withdraw')?.addEventListener('click', async () => {
+      const btn = document.getElementById('btn-ewallet-withdraw');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> ĐANG XỬ LÝ...';
+      
+      const withdrawAmount = Math.floor(Math.random() * 3000000) + 300000;
+
+      try {
+        await api.payments.ewallet({
+          amount: withdrawAmount,
+          action: "WITHDRAW",
+          accountId: state.accounts?.[0]?.id
+        });
+
+        Modal.open(`
+          <div class="p-6 text-center border-b border-white/5 relative">
+            <button onclick="Modal.close()" class="absolute top-6 right-6 text-ai-muted hover:text-white transition-colors">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full bg-status-success/20 border border-status-success/30 flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="check-circle" class="w-8 h-8 text-status-success"></i>
+            </div>
+            <h3 class="text-white text-lg font-bold mb-1">Rút Tiền Ví Thành Công</h3>
+            <p class="text-[14px] text-ai-muted">Bạn đã rút thành công ${formatUtils.currency(withdrawAmount, 'VND')} từ ví điện tử.</p>
+          </div>
+          <div class="p-6 bg-white/5">
+            <button onclick="Modal.close();" class="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition-all">
+              ĐÓNG
+            </button>
+          </div>
+        `);
+      } catch (error) {
+        Modal.open(`
+          <div class="p-6 text-center border-b border-white/5 relative">
+            <button onclick="Modal.close()" class="absolute top-6 right-6 text-ai-muted hover:text-white transition-colors">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full bg-status-error/20 border border-status-error/30 flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="alert-circle" class="w-8 h-8 text-status-error"></i>
+            </div>
+            <h3 class="text-white text-lg font-bold mb-1">Rút Tiền Ví Thất Bại</h3>
+            <p class="text-[14px] text-ai-muted">${error.message || 'Không thể rút tiền ví lúc này.'}</p>
+          </div>
+          <div class="p-6 bg-white/5">
+            <button onclick="Modal.close();" class="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition-all">
+              ĐÓNG
+            </button>
+          </div>
+        `);
+      }
+      lucide.createIcons();
+
+      btn.disabled = false;
+      btn.innerHTML = 'Rút Tiền';
+    });
   }
 };

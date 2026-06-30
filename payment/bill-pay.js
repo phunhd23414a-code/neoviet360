@@ -57,6 +57,23 @@ const BillPayPage = {
                 <div class="text-white font-extrabold text-[32px] font-mono relative z-10">1.250.000 ₫</div>
                 <div class="text-ai-muted text-[13px] mt-2 relative z-10">Kỳ cước: Tháng 6/2026</div>
               </div>
+
+              <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-status-warning/10 flex items-center justify-center text-status-warning">
+                    <i data-lucide="calendar-days" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-bold">Thanh toán định kỳ</div>
+                    <div class="text-ai-muted text-[11px]">Tự động thanh toán hàng tháng</div>
+                  </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="recurring-toggle" class="sr-only peer">
+                  <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-status-warning"></div>
+                </label>
+              </div>
+
               <button id="btn-pay-bill" class="w-full bg-status-success/20 hover:bg-status-success/30 text-status-success border border-status-success/50 py-4 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(0,230,118,0.1)] flex justify-center items-center gap-2">
                 <i data-lucide="check-circle" class="w-5 h-5"></i> XÁC NHẬN THANH TOÁN
               </button>
@@ -89,9 +106,52 @@ const BillPayPage = {
       btn.innerHTML = `<i class="animate-spin" data-lucide="loader"></i> ĐANG KHỚP LỆNH...`;
       lucide.createIcons();
       
-      await mockDelay(1500);
-      btn.innerHTML = `ĐÃ THANH TOÁN THÀNH CÔNG`;
-      setTimeout(() => router.navigate('dashboard'), 1000);
+      try {
+        if (state.accounts.length === 0) {
+          state.accounts = await api.accounts.list();
+        }
+
+        const sourceAccount = state.accounts.find((acc) => acc.currency === 'VND') || state.accounts[0];
+        if (!sourceAccount?.id) {
+          throw new Error('Không tìm thấy tài khoản thanh toán');
+        }
+
+        const isRecurring = document.getElementById('recurring-toggle')?.checked;
+
+        await api.billpay.create({
+          billerCode: 'EVN_HCMC',
+          customerCode: 'PE123456',
+          amount: 1250000,
+          accountId: sourceAccount.id,
+          recurring: !!isRecurring
+        });
+
+        btn.innerHTML = `ĐÃ THANH TOÁN THÀNH CÔNG`;
+        setTimeout(() => router.navigate('dashboard'), 1000);
+      } catch (error) {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="alert-circle" class="w-5 h-5"></i> THỬ LẠI`;
+        lucide.createIcons();
+
+        Modal.open(`
+          <div class="p-6 text-center border-b border-white/5 relative">
+            <button onclick="Modal.close()" class="absolute top-6 right-6 text-ai-muted hover:text-white transition-colors">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full bg-status-error/20 border border-status-error/30 flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="alert-circle" class="w-8 h-8 text-status-error"></i>
+            </div>
+            <h3 class="text-white text-lg font-bold mb-1">Thanh toán thất bại</h3>
+            <p class="text-[14px] text-ai-muted">${error.message || 'Không thể thanh toán hóa đơn lúc này.'}</p>
+          </div>
+          <div class="p-6 bg-white/5">
+            <button onclick="Modal.close()" class="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition-all">
+              ĐÃ HIỂU
+            </button>
+          </div>
+        `);
+        lucide.createIcons();
+      }
     });
   }
 };

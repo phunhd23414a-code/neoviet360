@@ -1,0 +1,83 @@
+{
+  "budgets": [
+    {
+      "id": "budget-eating",
+      "category": "eating",
+      "label": "Ăn uống",
+      "limit": 5000000,
+      "period": "month",
+      "description": "Quán ăn, cà phê, giao hàng thực phẩm",
+      "icon": "utensils",
+      "color": "danger",
+      "enabled": true
+    },
+    {
+      "id": "budget-shopping",
+      "category": "shopping",
+      "label": "Mua sắm",
+      "limit": 3000000,
+      "period": "month",
+      "description": "Quần áo, điện tử, hàng tiêu dùng",
+      "icon": "shopping-bag",
+      "color": "secondary",
+      "enabled": true
+    },
+    {
+      "id": "budget-entertainment",
+      "category": "entertainment",
+      "label": "Giải trí",
+      "limit": 2000000,
+      "period": "month",
+      "description": "Phim, âm nhạc, game, sự kiện",
+      "icon": "music",
+      "color": "secondary",
+      "enabled": true
+    },
+    {
+      "id": "budget-transport",
+      "category": "transport",
+      "label": "Giao thông",
+      "limit": 2000000,
+      "period": "month",
+      "description": "Taxi, xe buýt, gig economy",
+      "icon": "car",
+      "color": "info",
+      "enabled": false
+    },
+    {
+      "id": "budget-utilities",
+      "category": "utilities",
+      "label": "Tiện ích",
+      "limit": 1500000,
+      "period": "month",
+      "description": "Điện, nước, internet, điện thoại",
+      "icon": "zap",
+      "color": "warning",
+      "enabled": false
+    },
+    {
+      "id": "budget-healthcare",
+      "category": "healthcare",
+      "label": "Y tế",
+      "limit": 1000000,
+      "period": "month",
+      "description": "Bệnh viện, thuốc, khám sức khỏe",
+      "icon": "heart",
+      "color": "danger",
+      "enabled": false
+    },
+    {
+      "id": "budget-education",
+      "category": "education",
+      "label": "Giáo dục",
+      "limit": 2000000,
+      "period": "month",
+      "description": "Khóa học, sách, tài liệu học tập",
+      "icon": "book",
+      "color": "info",
+      "enabled": false
+    }
+  ],
+  "lastUpdated": "2026-06-17T01:27:00Z",
+  "notes": "Default budget templates. Users can customize per their needs."
+}

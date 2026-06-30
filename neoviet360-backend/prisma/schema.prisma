@@ -1,0 +1,442 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+  ZALO
+}
+
+enum KycStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum AccountType {
+  CHECKING
+  SAVINGS
+  WALLET
+  CREDIT
+  INVESTMENT
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+  TOPUP
+  PAYMENT
+  WITHDRAWAL
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum BudgetPeriod {
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum LoanStatus {
+  ACTIVE
+  PAID
+  OVERDUE
+  CLOSED
+}
+
+enum CardType {
+  DEBIT
+  CREDIT
+  VIRTUAL
+}
+
+enum BillStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum SplitBillStatus {
+  OPEN
+  SETTLED
+  CANCELLED
+}
+
+enum NotificationType {
+  SYSTEM
+  TRANSACTION
+  BUDGET
+  BILL
+  REWARD
+  SECURITY
+}
+
+enum RewardType {
+  EARN
+  REDEEM
+  ADJUST
+}
+
+enum ChatRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+model User {
+  id             String        @id @default(cuid())
+  email          String        @unique
+  passwordHash   String?       @map("password_hash")
+  name           String
+  avatar         String?
+  provider       AuthProvider  @default(LOCAL)
+  providerId     String?       @map("provider_id")
+  phone          String?
+  kycStatus      KycStatus     @default(PENDING) @map("kyc_status")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  accounts       Account[]
+  transactions   Transaction[]
+  budgets        Budget[]
+  savingsGoals   SavingsGoal[]
+  loans          Loan[]
+  cards          Card[]
+  bills          Bill[]
+  splitBills     SplitBill[]   @relation("SplitBillCreator")
+  notifications  Notification[]
+  rewards        Reward[]
+  chatHistory    ChatHistory[]
+  carbonTracks   CarbonTrack[]
+  topups         Topup[]
+  ewalletTxs     EwalletTransaction[]
+  qrPayTxs       QrPayTransaction[]
+  scheduledPmts  ScheduledPayment[]
+
+  @@map("users")
+}
+
+model Account {
+  id            String        @id @default(cuid())
+  userId        String        @map("user_id")
+  type          AccountType   @default(CHECKING)
+  name          String
+  balance       Decimal       @default(0) @db.Decimal(18, 2)
+  currency      String        @default("VND")
+  accountNumber String        @unique @map("account_number")
+  isDefault     Boolean       @default(false) @map("is_default")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outgoing      Transaction[] @relation("FromAccount")
+  incoming      Transaction[] @relation("ToAccount")
+  savingsGoals  SavingsGoal[]
+  cards         Card[]
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Transaction {
+  id            String            @id @default(cuid())
+  userId        String            @map("user_id")
+  fromAccountId String?           @map("from_account_id")
+  toAccountId   String?           @map("to_account_id")
+  amount        Decimal           @db.Decimal(18, 2)
+  currency      String            @default("VND")
+  category      String
+  description   String?
+  type          TransactionType
+  status        TransactionStatus @default(COMPLETED)
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fromAccount   Account?          @relation("FromAccount", fields: [fromAccountId], references: [id], onDelete: SetNull)
+  toAccount     Account?          @relation("ToAccount", fields: [toAccountId], references: [id], onDelete: SetNull)
+  splitBills    SplitBill[]
+  rewards       Reward[]
+  carbonTracks  CarbonTrack[]
+
+  @@index([userId, createdAt])
+  @@index([fromAccountId])
+  @@index([toAccountId])
+  @@map("transactions")
+}
+
+model Budget {
+  id          String       @id @default(cuid())
+  userId      String       @map("user_id")
+  category    String
+  limitAmount Decimal      @map("limit_amount") @db.Decimal(18, 2)
+  period      BudgetPeriod @default(MONTHLY)
+  startDate   DateTime     @map("start_date")
+  endDate     DateTime     @map("end_date")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, category])
+  @@map("budgets")
+}
+
+model SavingsGoal {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  accountId     String?  @map("account_id")
+  name          String
+  targetAmount  Decimal  @map("target_amount") @db.Decimal(18, 2)
+  currentAmount Decimal  @default(0) @map("current_amount") @db.Decimal(18, 2)
+  deadline      DateTime?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account       Account? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("savings_goals")
+}
+
+model Loan {
+  id             String     @id @default(cuid())
+  userId         String     @map("user_id")
+  amount         Decimal    @db.Decimal(18, 2)
+  interestRate   Decimal    @map("interest_rate") @db.Decimal(8, 4)
+  termMonths     Int        @map("term_months")
+  monthlyPayment Decimal    @map("monthly_payment") @db.Decimal(18, 2)
+  remaining      Decimal    @db.Decimal(18, 2)
+  status         LoanStatus @default(ACTIVE)
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("loans")
+}
+
+model Card {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  accountId   String   @map("account_id")
+  cardNumber  String   @unique @map("card_number")
+  type        CardType @default(DEBIT)
+  limitAmount Decimal  @default(0) @map("limit_amount") @db.Decimal(18, 2)
+  spent       Decimal  @default(0) @db.Decimal(18, 2)
+  isFrozen    Boolean  @default(false) @map("is_frozen")
+  expiresAt   DateTime @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("cards")
+}
+
+model Bill {
+  id          String     @id @default(cuid())
+  userId      String     @map("user_id")
+  name        String
+  amount      Decimal    @db.Decimal(18, 2)
+  category    String
+  dueDate     DateTime   @map("due_date")
+  isRecurring Boolean    @default(false) @map("is_recurring")
+  status      BillStatus @default(PENDING)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, dueDate])
+  @@map("bills")
+}
+
+model SplitBill {
+  id            String          @id @default(cuid())
+  creatorId     String          @map("creator_id")
+  transactionId String?         @map("transaction_id")
+  title         String
+  totalAmount   Decimal         @map("total_amount") @db.Decimal(18, 2)
+  members       Json
+  status        SplitBillStatus @default(OPEN)
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  creator       User            @relation("SplitBillCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  transaction   Transaction?    @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+
+  @@index([creatorId])
+  @@map("split_bills")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String           @map("user_id")
+  type      NotificationType @default(SYSTEM)
+  title     String
+  message   String
+  isRead    Boolean          @default(false) @map("is_read")
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model Reward {
+  id            String      @id @default(cuid())
+  userId        String      @map("user_id")
+  transactionId String?     @map("transaction_id")
+  points        Int
+  type          RewardType  @default(EARN)
+  description   String?
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transaction   Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("rewards")
+}
+
+model FxRate {
+  id           String   @id @default(cuid())
+  fromCurrency String   @map("from_currency")
+  toCurrency   String   @map("to_currency")
+  rate         Decimal  @db.Decimal(20, 8)
+  source       String
+  fetchedAt    DateTime @default(now()) @map("fetched_at")
+
+  @@unique([fromCurrency, toCurrency, source])
+  @@map("fx_rates")
+}
+
+model CryptoPrice {
+  id        String   @id @default(cuid())
+  symbol    String
+  name      String
+  priceUsd  Decimal  @map("price_usd") @db.Decimal(20, 8)
+  change24h Decimal  @default(0) @map("change_24h") @db.Decimal(10, 4)
+  marketCap Decimal  @default(0) @map("market_cap") @db.Decimal(24, 2)
+  fetchedAt DateTime @default(now()) @map("fetched_at")
+
+  @@index([symbol, fetchedAt])
+  @@map("crypto_prices")
+}
+
+model ChatHistory {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  role      ChatRole
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("chat_history")
+}
+
+model CarbonTrack {
+  id            String       @id @default(cuid())
+  userId        String       @map("user_id")
+  transactionId String?      @map("transaction_id")
+  category      String
+  carbonKg      Decimal      @map("carbon_kg") @db.Decimal(10, 3)
+  createdAt     DateTime     @default(now()) @map("created_at")
+
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transaction   Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("carbon_tracks")
+}
+
+// ==================== PAYMENT MODELS ====================
+
+model Topup {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  accountId   String?  @map("account_id")
+  phone       String
+  amount      Decimal  @db.Decimal(18, 2)
+  status      String   @default("SUCCESS")
+  provider    String   @default("VIETTEL")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("topups")
+}
+
+model EwalletTransaction {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  fromAccountId String? @map("from_account_id")
+  toWallet    String   @map("to_wallet")
+  amount      Decimal  @db.Decimal(18, 2)
+  status      String   @default("SUCCESS")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("ewallet_transactions")
+}
+
+model QrPayTransaction {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  accountId   String?  @map("account_id")
+  qrData      String   @map("qr_data")
+  amount      Decimal  @db.Decimal(18, 2)
+  status      String   @default("SUCCESS")
+  merchantName String? @map("merchant_name")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("qr_pay_transactions")
+}
+
+model ScheduledPayment {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  accountId   String   @map("account_id")
+  type        String   // topup, bill, transfer, ewallet
+  recipient   String
+  amount      Decimal  @db.Decimal(18, 2)
+  frequency   String   @default("ONCE") // ONCE, DAILY, WEEKLY, MONTHLY
+  nextRunAt   DateTime @map("next_run_at")
+  isActive    Boolean  @default(true) @map("is_active")
+  lastRunAt   DateTime? @map("last_run_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([nextRunAt])
+  @@map("scheduled_payments")
+}

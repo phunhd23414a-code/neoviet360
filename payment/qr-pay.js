@@ -26,9 +26,9 @@ const QRPayPage = {
               </div>
             </div>
             
-            <button class="w-full bg-status-highlight/10 hover:bg-status-highlight/20 text-status-highlight border border-status-highlight/40 py-4 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(0,245,255,0.1)] flex items-center justify-center gap-2">
-              <i data-lucide="camera" class="w-5 h-5"></i> KÍCH HOẠT CAMERA AI
-            </button>
+             <button id="btn-qr-camera" class="w-full bg-status-highlight/10 hover:bg-status-highlight/20 text-status-highlight border border-status-highlight/40 py-4 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(0,245,255,0.1)] flex items-center justify-center gap-2">
+               <i data-lucide="camera" class="w-5 h-5"></i> KÍCH HOẠT CAMERA AI
+             </button>
           </div>
 
           <div class="layer-secondary rounded-3xl p-8 flex flex-col items-center text-center justify-center">
@@ -50,6 +50,65 @@ const QRPayPage = {
     `;
     lucide.createIcons();
     QRPayPage.generateQR();
+    QRPayPage.bindEvents();
+  },
+
+  bindEvents: () => {
+    document.getElementById('btn-qr-camera')?.addEventListener('click', async () => {
+      const btn = document.getElementById('btn-qr-camera');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> ĐANG QUÉT...';
+      
+      const amount = Math.floor(Math.random() * 5000000) + 500000;
+
+      try {
+        await api.payments.qrpay({
+          amount,
+          qrContent: "https://neoviet360.vn/pay/" + (auth.getUser()?.id || "TEST"),
+          accountId: state.accounts?.[0]?.id
+        });
+
+        Modal.open(`
+          <div class="p-6 text-center border-b border-white/5 relative">
+            <button onclick="Modal.close()" class="absolute top-6 right-6 text-ai-muted hover:text-white transition-colors">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full bg-status-success/20 border border-status-success/30 flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="check-circle" class="w-8 h-8 text-status-success"></i>
+            </div>
+            <h3 class="text-white text-lg font-bold mb-1">Nhận Tiền Thành Công</h3>
+            <p class="text-[14px] text-ai-muted">Bạn vừa nhận được ${formatUtils.currency(amount, 'VND')} qua mã QR.</p>
+          </div>
+          <div class="p-6 bg-white/5">
+            <button onclick="Modal.close(); router.navigate('dashboard');" class="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition-all">
+              VỀ TRANG CHỦ
+            </button>
+          </div>
+        `);
+      } catch (error) {
+        Modal.open(`
+          <div class="p-6 text-center border-b border-white/5 relative">
+            <button onclick="Modal.close()" class="absolute top-6 right-6 text-ai-muted hover:text-white transition-colors">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full bg-status-error/20 border border-status-error/30 flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="alert-circle" class="w-8 h-8 text-status-error"></i>
+            </div>
+            <h3 class="text-white text-lg font-bold mb-1">Nhận Tiền Thất Bại</h3>
+            <p class="text-[14px] text-ai-muted">${error.message || 'Không thể xử lý giao dịch QR lúc này.'}</p>
+          </div>
+          <div class="p-6 bg-white/5">
+            <button onclick="Modal.close()" class="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition-all">
+              ĐÓNG
+            </button>
+          </div>
+        `);
+      }
+      lucide.createIcons();
+
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="camera" class="w-5 h-5"></i> KÍCH HOẠT CAMERA AI';
+    });
   },
 
   generateQR: () => {

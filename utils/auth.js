@@ -1,40 +1,85 @@
 // neoviet360/utils/auth.js
+
 const auth = {
-  isLoggedIn: () => {
-    return localStorage.getItem('nv360_session') !== null;
+  normalizeUser(user) {
+    if (!user) return null;
+
+    return {
+      ...user,
+      fullName: user.fullName || user.name || user.email?.split('@')[0] || 'Khách hàng NeoViet',
+      name: user.name || user.fullName || user.email?.split('@')[0] || 'Khách hàng NeoViet',
+      tier: user.tier || user.membershipTier || 'Thành viên'
+    };
   },
-  
-  login: async (email, password) => {
-    // Demo: Chấp nhận email có '@' và pass >= 6 ký tự
-    if (!email.includes('@') || password.length < 6) {
-      throw new Error("Email không hợp lệ hoặc mật khẩu chưa đủ 6 ký tự");
+
+  async initSession() {
+    const token = localStorage.getItem('neoviet_token');
+    const userStr = localStorage.getItem('neoviet_user');
+    const parsedUser = userStr ? this.normalizeUser(JSON.parse(userStr)) : null;
+
+    if (token && parsedUser) {
+      localStorage.setItem('neoviet_user', JSON.stringify(parsedUser));
+
+      if (window.state) {
+        window.state.user = parsedUser;
+      }
     }
-    
-    await mockDelay(1200); // Giả lập độ trễ kết nối mạng
-    
-    // Đọc thông tin từ file mock
-    const user = await api.fetchJSON('./data/user.json');
-    if (!user) throw new Error("Không thể tải hệ thống dữ liệu mock");
-    
-    // Lưu phiên đăng nhập
-    localStorage.setItem('nv360_session', JSON.stringify(user));
-    state.user = user;
-    return user;
+
+    return token ? parsedUser : null;
   },
-  
-  logout: () => {
-    localStorage.removeItem('nv360_session');
-    state.user = null;
-    router.navigate('login');
-  },
-  
-  getUser: () => {
-    if (state.user) return state.user;
-    const session = localStorage.getItem('nv360_session');
-    if (session) {
-      state.user = JSON.parse(session);
-      return state.user;
+
+  async login(email, password) {
+    try {
+      if (!email || !password) {
+        throw new Error('Vui lòng nhập đầy đủ thông tin đăng nhập.');
+      }
+
+      const result = await window.api.auth.login(email, password);
+      const normalizedUser = this.normalizeUser(result.user);
+      
+      // Store token and user info
+      window.api.setAuth(result.token, normalizedUser);
+
+      if (window.state) {
+        window.state.user = normalizedUser;
+      }
+
+      return normalizedUser;
+    } catch (error) {
+      console.error('Lỗi khi đăng nhập:', error);
+      throw error;
     }
-    return null;
+  },
+
+  getUser() {
+    const userStr = localStorage.getItem('neoviet_user');
+    return userStr ? this.normalizeUser(JSON.parse(userStr)) : null;
+  },
+
+  isLoggedIn() {
+    return !!localStorage.getItem('neoviet_token');
+  },
+
+  logout() {
+    localStorage.removeItem('neoviet_token');
+    localStorage.removeItem('neoviet_user');
+    if (window.state) {
+      window.state.user = null;
+      window.state.currentPage = 'login';
+    }
+    window.location.hash = '#/login';
+    if (window.router) {
+      window.router.navigate('login');
+    }
+  },
+
+  checkProtection() {
+    if (!this.isLoggedIn()) {
+      window.location.hash = '#/login';
+      return false;
+    }
+    return true;
   }
 };
+
+window.auth = auth;

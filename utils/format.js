@@ -32,3 +32,5 @@ const formatUtils = {
     return date.toLocaleDateString('vi-VN');
   }
 };
+
+window.formatUtils = formatUtils;

@@ -1,6 +1,54 @@
 [
-  { "id": "PRD-01", "name": "Thẻ tín dụng NeoViet Platinum", "type": "card", "desc": "Hoàn tiền 5% mọi giao dịch AI. Miễn phí thường niên trọn đời.", "highlight": "Khuyên dùng" },
-  { "id": "PRD-02", "name": "Gói Đầu tư Đa tài sản", "type": "invest", "desc": "AI tự động phân bổ vốn vào Cổ phiếu, Trái phiếu & Crypto.", "highlight": "Lợi nhuận ~15%/năm" },
-  { "id": "PRD-03", "name": "Bảo hiểm Rủi ro Không gian mạng", "type": "insurance", "desc": "Bảo vệ toàn diện tài sản số và giao dịch trực tuyến.", "highlight": "Chỉ 10.000đ/tháng" },
-  { "id": "PRD-04", "name": "Vay tiêu dùng siêu tốc", "type": "loan", "desc": "Phê duyệt bằng AI trong 3 giây. Không cần chứng minh thu nhập.", "highlight": "Lãi suất 8.5%" }
+  { 
+    "id": "PRD-01", 
+    "name": "Thẻ tín dụng NeoViet Platinum", 
+    "type": "card", 
+    "desc": "Hoàn tiền 5% mọi giao dịch AI. Miễn phí thường niên trọn đời.", 
+    "highlight": "Khuyên dùng",
+    "fullDesc": "Thẻ tín dụng cao cấp tích hợp công nghệ AI, tự động tối ưu hóa điểm thưởng và hoàn tiền dựa trên thói quen chi tiêu của bạn.",
+    "benefits": [
+      "Hoàn tiền 5% cho mọi giao dịch online",
+      "Miễn phí thường niên trọn đời",
+      "Đặc quyền phòng chờ sân bay hạng thương gia"
+    ]
+  },
+  { 
+    "id": "PRD-02", 
+    "name": "Gói Đầu tư Đa tài sản", 
+    "type": "invest", 
+    "desc": "AI tự động phân bổ vốn vào Cổ phiếu, Trái phiếu & Crypto.", 
+    "highlight": "Lợi nhuận ~15%/năm",
+    "fullDesc": "Giải pháp đầu tư thông minh sử dụng thuật toán học máy để phân tích thị trường và tự động tái cơ cấu danh mục đầu tư.",
+    "benefits": [
+      "Phân bổ vốn tự động theo khẩu vị rủi ro",
+      "Cảnh báo biến động thị trường tức thì",
+      "Miễn phí quản lý tài khoản năm đầu"
+    ]
+  },
+  { 
+    "id": "PRD-03", 
+    "name": "Bảo hiểm Rủi ro Không gian mạng", 
+    "type": "insurance", 
+    "desc": "Bảo vệ toàn diện tài sản số và giao dịch trực tuyến.", 
+    "highlight": "Chỉ 10.000đ/tháng",
+    "fullDesc": "Gói bảo hiểm độc quyền bảo vệ bạn khỏi các rủi ro lừa đảo trực tuyến, đánh cắp danh tính và mất mát tài sản số.",
+    "benefits": [
+      "Bồi thường lên đến 500 triệu đồng",
+      "Hỗ trợ pháp lý 24/7 khi có sự cố",
+      "Quy trình bồi thường 100% online"
+    ]
+  },
+  { 
+    "id": "PRD-04", 
+    "name": "Vay tiêu dùng siêu tốc", 
+    "type": "loan", 
+    "desc": "Phê duyệt bằng AI trong 3 giây. Không cần chứng minh thu nhập.", 
+    "highlight": "Lãi suất 8.5%",
+    "fullDesc": "Sử dụng điểm tín dụng AI để phê duyệt khoản vay ngay lập tức. Giải ngân vào tài khoản chỉ sau 3 phút mà không cần giấy tờ phức tạp.",
+    "benefits": [
+      "Không cần chứng minh thu nhập",
+      "Lãi suất ưu đãi tính theo ngày",
+      "Tùy chọn kỳ hạn thanh toán linh hoạt"
+    ]
+  }
 ]
