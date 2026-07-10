@@ -5,9 +5,7 @@ const SavingsPage = {
       <div class="max-w-4xl mx-auto w-full pt-4 animate__animated animate__fadeIn space-y-8">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
-            <button onclick="router.navigate('accounts')" class="p-2 rounded-lg bg-white/5 text-ai-muted hover:text-white transition-colors">
-              <i data-lucide="arrow-left" class="w-5 h-5"></i>
-            </button>
+            ${BackButton.render('accounts')}
             <h2 class="text-xl font-bold text-white tracking-wide">Tiết Kiệm Mục Tiêu</h2>
           </div>
           <button onclick="document.getElementById('savings-form-container').scrollIntoView({behavior: 'smooth'})" class="bg-status-success/10 text-status-success px-4 py-2 rounded-xl text-sm font-bold border border-status-success/20">

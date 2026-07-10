@@ -26,9 +26,7 @@ const InvestPage = {
       <div class="max-w-5xl mx-auto w-full pt-4 animate__animated animate__fadeIn">
         <div class="flex items-center justify-between mb-8">
           <div class="flex items-center gap-3">
-            <button onclick="router.navigate('dashboard')" class="p-2 rounded-lg bg-white/5 text-ai-muted hover:text-white transition-colors">
-              <i data-lucide="arrow-left" class="w-5 h-5"></i>
-            </button>
+            ${BackButton.render()}
             <h2 class="text-xl font-bold text-white tracking-wide">AI_Invest (Đầu tư)</h2>
           </div>
           <div class="px-3 py-1 bg-status-premium/20 border border-status-premium/40 rounded-full text-[11px] font-bold text-status-premium flex items-center gap-2">

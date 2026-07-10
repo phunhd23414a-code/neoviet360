@@ -20,7 +20,10 @@ const MarketplacePage = {
 
     container.innerHTML = `
       <div class="max-w-5xl mx-auto w-full pt-4 animate__animated animate__fadeIn">
-        <h2 class="text-xl font-bold text-white tracking-wide mb-8">Ecosystem Hub (Hệ Sinh Thái)</h2>
+        <div class="flex items-center gap-3 mb-8">
+          ${BackButton.render()}
+          <h2 class="text-xl font-bold text-white tracking-wide">Ecosystem Hub (Hệ Sinh Thái)</h2>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           ${productHtml}
         </div>

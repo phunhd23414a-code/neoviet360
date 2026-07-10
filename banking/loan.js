@@ -4,11 +4,8 @@ const LoanPage = {
     container.innerHTML = `
       <div class="max-w-3xl mx-auto w-full pt-4 animate__animated animate__fadeIn pb-24 md:pb-8">
         <div class="flex items-center gap-3 mb-8">
-          <button onclick="router.navigate('dashboard')" class="p-2 rounded-lg bg-white/5 text-ai-muted hover:text-white transition-colors">
-            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-          </button>
+          ${BackButton.render()}
           <div>
-            <!-- ĐÃ SỬA: Bỏ chữ Credit_Node -->
             <h2 class="text-xl font-bold text-white tracking-wide">Vay Tiêu Dùng & Trả Góp (BNPL)</h2>
             <p class="text-[12px] text-ai-muted mt-1">Duyệt hạn mức siêu tốc - Mua trước trả sau</p>
           </div>

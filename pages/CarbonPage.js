@@ -75,10 +75,8 @@ const CarbonPage = {
 
     container.innerHTML = `
       <div class="max-w-4xl mx-auto w-full animate__animated animate__fadeIn space-y-8">
-        <div class="flex items-center gap-4 mb-2">
-          <button onclick="router.navigate('insights')" class="p-2 rounded-lg bg-white/5 text-ai-muted hover:text-white transition-colors">
-            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-          </button>
+        <div class="flex items-center gap-3 mb-2">
+          ${BackButton.render('insights')}
           <h2 class="text-xl font-bold text-white tracking-wide">Carbon Footprint Tracker</h2>
         </div>
 

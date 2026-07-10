@@ -1,14 +1,65 @@
 // neoviet360/utils/router.js
 const router = {
-  navigate: (page) => {
+  /** Lịch sử điều hướng để hỗ trợ nút Back */
+  _history: [],
+  _maxHistory: 20,
+
+  /** Lưu trang trước khi điều hướng,
+   *  tránh lưu nếu navigate('login') liên tục */
+  _pushHistory(page) {
+    const prev = this._history[this._history.length - 1];
+    if (prev !== page && page !== 'login') {
+      this._history.push(page);
+      if (this._history.length > this._maxHistory) {
+        this._history.shift();
+      }
+    }
+  },
+
+  /** Lấy trang trước đó trong lịch sử */
+  getPreviousPage() {
+    return this._history[this._history.length - 1] || 'dashboard';
+  },
+
+  /** Quay lại trang trước đó */
+  back() {
+    if (this._history.length > 0) {
+      const prev = this._history.pop();
+      // pop tiếp nếu trùng với current
+      while (this._history.length > 0 && this._history[this._history.length - 1] === prev) {
+        this._history.pop();
+      }
+      this.navigate(prev, { replace: true });
+      return;
+    }
+    this.navigate('dashboard', { replace: true });
+  },
+
+  navigate: (page, opts = {}) => {
     if (state.currentPage === page && page !== 'login' && page !== 'register') return;
+
+    if (!opts.replace) {
+      // Chỉ push history nếu không phải replace
+      if (state.currentPage !== 'login' && state.currentPage !== page) {
+        router._pushHistory(state.currentPage);
+      }
+    }
     state.currentPage = page;
+
+    // Cập nhật URL hash cho mọi trang — tạo "địa chỉ" riêng cho từng trang
+    const newHash = page === 'login' ? '#/login' : `#/${page}`;
+    if (window.location.hash !== newHash) {
+      if (opts.replace) {
+        window.location.replace(newHash);
+      } else {
+        window.location.hash = newHash;
+      }
+    }
+
     const appContainer = document.getElementById('app');
     const authContainer = document.getElementById('auth-layout');
 
     if (page === 'login' || page === 'register') {
-      // Chỉ giữ một màn hình xác thực duy nhất.
-      // Mọi request tới register đều gom về login để tránh xuất hiện 2 trang đăng nhập/xác thực.
       state.currentPage = 'login';
       if (window.location.hash !== '#/login') {
         window.location.hash = '#/login';
@@ -19,22 +70,21 @@ const router = {
       authContainer.innerHTML = '';
       LoginPage.render(authContainer);
     } else {
-      // 2. Kích hoạt chốt chặn an ninh nội bộ trước khi render bất kỳ trang Core Banking nào
       auth.checkProtection();
-      
-      if (!auth.isLoggedIn()) return; // Dừng luồng nếu không có token hợp lệ
+
+      if (!auth.isLoggedIn()) return;
 
       appContainer.classList.remove('hidden');
       authContainer.classList.add('hidden');
-      
+
       const mainContent = document.getElementById('main-content');
       const headerContainer = document.getElementById('header-container');
       Header.render(headerContainer, page);
       if (window.BottomNav) {
         BottomNav.render(document.getElementById('bottom-nav-container'), page);
       }
-      
-      // Khối định tuyến Phase 3
+
+      // Khối định tuyến
       if (page === 'dashboard') {
         DashboardPage.render(mainContent);
       } else if (page === 'ekyc') {
@@ -90,25 +140,21 @@ const router = {
       } else if (page === 'security') {
         SecurityPage.render(mainContent);
       } else {
-        // Fallback an toàn nếu bấm nhầm
         mainContent.innerHTML = `<div class="p-10 text-center text-ai-muted font-mono">Module [${page}] đang được phát triển.</div>`;
       }
-      
+
     }
   },
-  
+
   init: async () => {
     try {
-      // Chỉ khôi phục session đã tồn tại, tuyệt đối không tự tạo user mock khi tải trang.
       if (window.auth && typeof auth.initSession === 'function') {
         await auth.initSession();
       }
 
       if (auth.isLoggedIn()) {
-        // Khởi tạo dữ liệu state từ mock data
         await state.initData();
-        
-        // 1. Đọc trực tiếp đường dẫn trên thanh URL khi F5
+
         const hash = window.location.hash.replace('#/', '');
         const page = hash ? hash : 'dashboard';
         router.navigate(page);
@@ -117,14 +163,17 @@ const router = {
       }
     } catch (err) {
       console.error('Router init error:', err);
-      // Fallback to login if something goes wrong during init
       router.navigate('login');
     }
-    
-    // 2. Lắng nghe khi người dùng gõ URL mới hoặc bấm nút Back/Forward của trình duyệt
+
+    // Lắng nghe hashchange (Back/Forward của trình duyệt)
     window.addEventListener('hashchange', () => {
       const hash = window.location.hash.replace('#/', '');
-      router.navigate(hash || 'login');
+      if (hash && hash !== state.currentPage) {
+        router.navigate(hash || 'login', { replace: true });
+      } else if (!hash) {
+        router.navigate('login', { replace: true });
+      }
     });
   }
 };

@@ -3,7 +3,10 @@ const TopupPage = {
   render: (container) => {
     container.innerHTML = `
       <div class="max-w-3xl mx-auto w-full pt-4 animate__animated animate__fadeIn">
-        <h2 class="text-xl font-bold text-white tracking-wide mb-8">Nạp Tiền Điện Thoại</h2>
+        <div class="flex items-center gap-3 mb-8">
+          ${BackButton.render()}
+          <h2 class="text-xl font-bold text-white tracking-wide">Nạp Tiền Điện Thoại</h2>
+        </div>
         
         <div class="layer-primary rounded-3xl p-8">
           <form id="topup-form" class="space-y-6">

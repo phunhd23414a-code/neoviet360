@@ -24,7 +24,10 @@ const FxExchangePage = {
 
     container.innerHTML = `
       <div class="max-w-4xl mx-auto w-full pt-4 animate__animated animate__fadeIn">
-        <h2 class="text-xl font-bold text-white tracking-wide mb-8">Chuyển đổi ngoại tệ</h2>
+        <div class="flex items-center gap-3 mb-8">
+          ${BackButton.render()}
+          <h2 class="text-xl font-bold text-white tracking-wide">Chuyển đổi ngoại tệ</h2>
+        </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="layer-primary rounded-3xl p-6 flex flex-col justify-between">

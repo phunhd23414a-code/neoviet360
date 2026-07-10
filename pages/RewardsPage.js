@@ -24,10 +24,8 @@ const RewardsPage = {
     container.innerHTML = `
       <div class="max-w-4xl mx-auto w-full animate__animated animate__fadeIn space-y-8 pb-20">
         <!-- Header -->
-        <div class="flex items-center gap-4">
-          <button onclick="router.navigate('profile')" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-ai-muted hover:text-white transition-colors">
-            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-          </button>
+        <div class="flex items-center gap-3">
+          ${BackButton.render('profile')}
           <div>
             <h2 class="text-xl font-bold text-white tracking-wide">NeoPoints & Ưu đãi</h2>
             <p class="text-[13px] text-ai-muted mt-1">Tích lũy điểm thưởng từ mọi giao dịch</p>
