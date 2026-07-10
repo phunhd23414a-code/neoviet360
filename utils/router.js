@@ -47,10 +47,12 @@ const router = {
     state.currentPage = page;
 
     // Cập nhật URL hash cho mọi trang — tạo "địa chỉ" riêng cho từng trang
+    // Dùng history.replaceState cho replace (không fire hashchange, không tạo entry mới)
+    // Dùng window.location.hash cho normal (tạo entry browser history)
     const newHash = page === 'login' ? '#/login' : `#/${page}`;
     if (window.location.hash !== newHash) {
       if (opts.replace) {
-        window.location.replace(newHash);
+        history.replaceState(null, '', newHash);
       } else {
         window.location.hash = newHash;
       }
