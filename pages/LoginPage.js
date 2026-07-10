@@ -102,7 +102,12 @@ const LoginPage = {
         lucide.createIcons();
         
         const user = await auth.login(email, password);
-        
+
+        // Khởi tạo dữ liệu state sau đăng nhập (giống luồng reload)
+        if (window.state && typeof state.initData === 'function') {
+          await state.initData();
+        }
+
         // Navigate to dashboard after successful login
         if (window.router) {
           router.navigate('dashboard');
