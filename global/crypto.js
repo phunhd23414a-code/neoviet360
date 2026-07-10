@@ -33,5 +33,6 @@ const CryptoPage = {
         </div>
       </div>
     `;
+    lucide.createIcons();
   }
 };

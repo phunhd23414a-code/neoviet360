@@ -21,7 +21,7 @@ const router = {
     return this._history[this._history.length - 1] || 'dashboard';
   },
 
-  /** Quay lại trang trước đó */
+  /** Quay lại trang trước đó. Trả về true nếu có lịch sử, false nếu không */
   back() {
     if (this._history.length > 0) {
       const prev = this._history.pop();
@@ -30,9 +30,9 @@ const router = {
         this._history.pop();
       }
       this.navigate(prev, { replace: true });
-      return;
+      return true;
     }
-    this.navigate('dashboard', { replace: true });
+    return false; // không có lịch sử — BackButton sẽ xử lý fallback
   },
 
   navigate: (page, opts = {}) => {

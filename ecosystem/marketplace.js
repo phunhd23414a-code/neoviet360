@@ -29,6 +29,7 @@ const MarketplacePage = {
         </div>
       </div>
     `;
+    lucide.createIcons();
   },
 
   explore: (product) => {

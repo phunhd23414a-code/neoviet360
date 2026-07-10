@@ -8,11 +8,10 @@ const BackButton = {
    * @param {object} opts - Tùy chỉnh
    *   - label: text bên cạnh (mặc định rỗng)
    *   - class: class bổ sung
-   *   - size: 'sm' | 'md'
    */
   render(fallback = 'dashboard', opts = {}) {
     return `
-      <button onclick="router.back() || router.navigate('${fallback}')"
+      <button onclick="if(!router.back()) router.navigate('${fallback}')"
         class="back-btn p-2 rounded-lg bg-white/5 text-ai-muted hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center justify-center shrink-0 ${opts.class || ''}"
         aria-label="Quay lại">
         <i data-lucide="arrow-left" class="w-5 h-5"></i>
