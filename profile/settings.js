@@ -81,6 +81,11 @@ const SettingsPage = {
 
       localStorage.setItem('neoviet_user', JSON.stringify(updatedUser));
 
+      // Also sync with active auth storage so tier-aware sessions reflect the change
+      if (window.auth && typeof window.auth.updateStoredUser === 'function') {
+        window.auth.updateStoredUser(updatedUser);
+      }
+
       Modal.open(`
         <div class="p-6 text-center border-b border-white/5 relative">
           <button onclick="Modal.close()" class="absolute top-6 left-6 text-ai-muted hover:text-white transition-colors">

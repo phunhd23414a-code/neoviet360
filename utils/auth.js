@@ -63,6 +63,48 @@ const auth = {
     return null;
   },
 
+  establishSession(token, user, remember = false) {
+    const storageType = remember ? 'local' : 'session';
+    const normalizedUser = this.normalizeUser(user);
+
+    this._write(storageType, AUTH_KEYS.TOKEN, token);
+    this._write(storageType, AUTH_KEYS.USER, JSON.stringify(normalizedUser));
+    this._write(storageType, AUTH_KEYS.EXPIRES, String(Date.now() + SESSION_DURATION_MS));
+
+    // Clear opposite storage to prevent stale data resurrection
+    const oppositeType = storageType === 'local' ? 'session' : 'local';
+    this._clearAll(oppositeType);
+
+    if (window.api) {
+      window.api.token = token;
+      window.api.user = normalizedUser;
+    }
+
+    if (window.state) {
+      window.state.user = normalizedUser;
+    }
+
+    return normalizedUser;
+  },
+
+  updateStoredUser(user) {
+    const session = this._findValidSession();
+    if (!session) return null;
+
+    const normalizedUser = this.normalizeUser(user);
+    this._write(session.storage, AUTH_KEYS.USER, JSON.stringify(normalizedUser));
+
+    if (window.api) {
+      window.api.user = normalizedUser;
+    }
+
+    if (window.state) {
+      window.state.user = normalizedUser;
+    }
+
+    return normalizedUser;
+  },
+
   normalizeUser(user) {
     if (!user) return null;
     return {
@@ -87,6 +129,10 @@ const auth = {
     }
     // No valid session found — clear everything to be safe
     this._clearBoth();
+    if (window.api) {
+      window.api.token = null;
+      window.api.user = null;
+    }
     if (window.state) {
       window.state.user = null;
     }
@@ -100,25 +146,7 @@ const auth = {
       }
 
       const result = await window.api.auth.login(email, password);
-      const normalizedUser = this.normalizeUser(result.user);
-      const storageType = remember ? 'local' : 'session';
-
-      // Store auth data
-      this._write(storageType, AUTH_KEYS.TOKEN, result.token);
-      this._write(storageType, AUTH_KEYS.USER, JSON.stringify(normalizedUser));
-      this._write(storageType, AUTH_KEYS.EXPIRES, String(Date.now() + SESSION_DURATION_MS));
-
-      // Also sync window.api for API calls
-      if (window.api) {
-        window.api.token = result.token;
-        window.api.user = normalizedUser;
-      }
-
-      if (window.state) {
-        window.state.user = normalizedUser;
-      }
-
-      return normalizedUser;
+      return this.establishSession(result.token, result.user, remember);
     } catch (error) {
       console.error('Lỗi khi đăng nhập:', error);
       throw error;
@@ -144,9 +172,10 @@ const auth = {
       window.state.user = null;
       window.state.currentPage = 'login';
     }
-    window.location.hash = '#/login';
     if (window.router) {
       window.router.navigate('login');
+    } else {
+      window.location.hash = '#/login';
     }
   },
 

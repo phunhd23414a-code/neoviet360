@@ -28,14 +28,31 @@ const API_BASE = getApiBase();
 class APIAdapter {
   constructor() {
     // Read from sessionStorage first, then localStorage
-    this.token = sessionStorage.getItem('neoviet_token') || localStorage.getItem('neoviet_token');
-    const userStr = sessionStorage.getItem('neoviet_user') || localStorage.getItem('neoviet_user');
-    try {
-      this.user = userStr ? JSON.parse(userStr) : null;
-    } catch (error) {
-      console.warn('Invalid stored user JSON; clearing auth state.', error);
+    // This is best-effort: auth.js owns full expiry validation.
+    // API calls will get 401 if token is expired.
+    const expires = parseInt(
+      sessionStorage.getItem('neoviet_session_expires_at') ||
+      localStorage.getItem('neoviet_session_expires_at') || '0', 10);
+    if (Date.now() < expires) {
+      this.token = sessionStorage.getItem('neoviet_token') || localStorage.getItem('neoviet_token');
+      const userStr = sessionStorage.getItem('neoviet_user') || localStorage.getItem('neoviet_user');
+      try {
+        this.user = userStr ? JSON.parse(userStr) : null;
+      } catch (error) {
+        console.warn('Invalid stored user JSON; clearing auth state.', error);
+        this.user = null;
+        this.clearAuth();
+      }
+    } else {
+      // Expired or no session — clear everything
+      this.token = null;
       this.user = null;
-      this.clearAuth();
+      localStorage.removeItem('neoviet_token');
+      localStorage.removeItem('neoviet_user');
+      localStorage.removeItem('neoviet_session_expires_at');
+      sessionStorage.removeItem('neoviet_token');
+      sessionStorage.removeItem('neoviet_user');
+      sessionStorage.removeItem('neoviet_session_expires_at');
     }
   }
 
@@ -102,13 +119,14 @@ class APIAdapter {
     try {
       const response = await fetch(url, options);
       if (response.status === 401) {
-        this.clearAuth();
-        // Use hash-router navigation if available, fallback to hash
-        if (window.router && window.router.navigate) {
-          window.router.navigate('login');
+        // Delegate to auth.logout() for unified cleanup (both storages, all keys, redirect)
+        if (window.auth && typeof window.auth.logout === 'function') {
+          window.auth.logout();
         } else {
+          this.clearAuth();
           window.location.hash = '#/login';
         }
+        return null;
       }
 
       if (!response.ok) {

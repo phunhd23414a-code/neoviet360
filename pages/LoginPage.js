@@ -187,17 +187,15 @@ const LoginPage = {
         const response = await fetch('./data/user.json');
         const user = await response.json();
         // Registration uses sessionStorage (no remember) by default
-        const storage = window.auth._storage('session');
-        storage.setItem('neoviet_token', 'demo-registration-token');
-        storage.setItem('neoviet_user', JSON.stringify(user));
-        storage.setItem('neoviet_session_expires_at', String(Date.now() + 15 * 60 * 1000));
-        if (window.state) window.state.user = user;
+        window.auth.establishSession('demo-registration-token', user, false);
 
         if (window.state && typeof state.initData === 'function') {
           await state.initData();
         }
 
-        router.navigate('dashboard');
+        if (window.router) {
+          router.navigate('dashboard');
+        }
       } catch (error) {
         console.error('Lỗi đăng ký:', error);
         btn.disabled = false;
