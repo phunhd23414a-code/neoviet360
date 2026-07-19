@@ -46,9 +46,14 @@ const auth = {
       if (token && userStr && expiresStr) {
         const expiresAt = parseInt(expiresStr, 10);
         if (Date.now() < expiresAt) {
-          const user = this.normalizeUser(JSON.parse(userStr));
-          this._activeStorage = type; // remember which storage was used
-          return { token, user, storage: type };
+          try {
+            const user = this.normalizeUser(JSON.parse(userStr));
+            return { token, user, storage: type };
+          } catch {
+            // Malformed user data — clean up this storage
+            this._clearAll(type);
+            continue;
+          }
         } else {
           // Expired — clean up this storage
           this._clearAll(type);
@@ -131,7 +136,7 @@ const auth = {
 
   logout() {
     this._clearBoth();
-    if (window.api && typeof window.api.clearAuth === 'function') {
+    if (window.api) {
       window.api.token = null;
       window.api.user = null;
     }
