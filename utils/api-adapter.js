@@ -27,15 +27,25 @@ const API_BASE = getApiBase();
 
 class APIAdapter {
   constructor() {
-    this.token = localStorage.getItem('neoviet_token');
-    this.user = JSON.parse(localStorage.getItem('neoviet_user') || 'null');
+    // Read from sessionStorage first, then localStorage
+    this.token = sessionStorage.getItem('neoviet_token') || localStorage.getItem('neoviet_token');
+    const userStr = sessionStorage.getItem('neoviet_user') || localStorage.getItem('neoviet_user');
+    this.user = userStr ? JSON.parse(userStr) : null;
   }
 
-  setAuth(token, user) {
+  setAuth(token, user, storageType = 'local') {
     this.token = token;
     this.user = user;
-    localStorage.setItem('neoviet_token', token);
-    localStorage.setItem('neoviet_user', JSON.stringify(user));
+    const target = storageType === 'session' ? sessionStorage : localStorage;
+    const opposite = storageType === 'session' ? localStorage : sessionStorage;
+    // Clear opposite auth keys first
+    opposite.removeItem('neoviet_token');
+    opposite.removeItem('neoviet_user');
+    opposite.removeItem('neoviet_session_expires_at');
+    // Write to target storage
+    target.setItem('neoviet_token', token);
+    target.setItem('neoviet_user', JSON.stringify(user));
+    target.setItem('neoviet_session_expires_at', String(Date.now() + 900000));
   }
 
   clearAuth() {
@@ -43,6 +53,10 @@ class APIAdapter {
     this.user = null;
     localStorage.removeItem('neoviet_token');
     localStorage.removeItem('neoviet_user');
+    localStorage.removeItem('neoviet_session_expires_at');
+    sessionStorage.removeItem('neoviet_token');
+    sessionStorage.removeItem('neoviet_user');
+    sessionStorage.removeItem('neoviet_session_expires_at');
   }
 
   async fetchJSON(path) {
@@ -83,7 +97,12 @@ class APIAdapter {
       const response = await fetch(url, options);
       if (response.status === 401) {
         this.clearAuth();
-        window.location.href = '/index.html?page=login';
+        // Use hash-router navigation if available, fallback to hash
+        if (window.router && window.router.navigate) {
+          window.router.navigate('login');
+        } else {
+          window.location.hash = '#/login';
+        }
       }
 
       if (!response.ok) {
