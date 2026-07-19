@@ -197,7 +197,6 @@ const LoginPage = {
           await state.initData();
         }
 
-        window.location.hash = '#/dashboard';
         router.navigate('dashboard');
       } catch (error) {
         console.error('Lỗi đăng ký:', error);
