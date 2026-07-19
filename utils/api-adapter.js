@@ -30,7 +30,13 @@ class APIAdapter {
     // Read from sessionStorage first, then localStorage
     this.token = sessionStorage.getItem('neoviet_token') || localStorage.getItem('neoviet_token');
     const userStr = sessionStorage.getItem('neoviet_user') || localStorage.getItem('neoviet_user');
-    this.user = userStr ? JSON.parse(userStr) : null;
+    try {
+      this.user = userStr ? JSON.parse(userStr) : null;
+    } catch (error) {
+      console.warn('Invalid stored user JSON; clearing auth state.', error);
+      this.user = null;
+      this.clearAuth();
+    }
   }
 
   setAuth(token, user, storageType = 'local') {
