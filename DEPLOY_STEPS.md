@@ -31,14 +31,23 @@ Backend serverless nằm tại `api/index.js` và sử dụng Express app trong
    - NODE_ENV=`production`
    - GEMINI_API_KEY (nếu có)
 
-5. **Migration database (nếu Supabase vừa tạo lại)**:
+5. **Migration database (nếu Supabase vừa tạo lại hoặc có migration mới)**:
    ```bash
-   npx prisma migrate deploy --schema=neoviet360-backend/prisma/schema.prisma
+   npm run db:deploy
    ```
 
 Trong Supabase lấy cả hai URI tại **Connect → Connection string → ORMs/Prisma**.
 Không dùng URI host `db.<project-ref>.supabase.co:5432` làm `DATABASE_URL` trên Vercel
 vì Vercel serverless có thể không truy cập được host direct này.
+
+Vercel chỉ chạy `npm run build` để build frontend và serverless API. Build không
+kết nối database, vì Supabase Free có thể tạm pause project khi không có hoạt động.
+Sau khi resume Supabase, chạy `npm run db:deploy` một lần từ máy local với
+`DATABASE_URL` và `DIRECT_URL` đúng, rồi redeploy Vercel nếu cần.
+
+Khi Supabase bị pause, cần bấm **Resume project** trong Supabase Dashboard
+trước. Vercel không thể tự đánh thức project Supabase đã bị pause; đây là giới
+hạn của gói Free, không phải lỗi code.
 
 Sau lần cấu hình đầu tiên, các lần push GitHub tiếp theo sẽ tự động deploy
 cả frontend và API cùng project.
