@@ -5,6 +5,22 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding database...");
 
+  const existingUser = await prisma.user.findUnique({
+    where: { email: "admin@neoviet360.vn" },
+    select: { id: true }
+  });
+
+  if (existingUser) {
+    const transactionCount = await prisma.transaction.count({
+      where: { userId: existingUser.id }
+    });
+
+    if (transactionCount > 0) {
+      console.log("Seed data already exists; skipping.");
+      return;
+    }
+  }
+
   // Hash password for default login user
   const passwordHash = await bcrypt.hash("password123", 10);
 
@@ -139,5 +155,8 @@ async function main() {
 }
 
 main()
-  .catch(console.error)
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  })
   .finally(() => prisma.$disconnect());

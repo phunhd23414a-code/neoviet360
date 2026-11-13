@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "NeoViet 360 frontend and serverless backend",
   "scripts": {
-    "postinstall": "prisma generate --schema=neoviet360-backend/prisma/schema.prisma"
+    "postinstall": "prisma generate --schema=neoviet360-backend/prisma/schema.prisma",
+    "build": "prisma generate --schema=neoviet360-backend/prisma/schema.prisma && prisma migrate deploy --schema=neoviet360-backend/prisma/schema.prisma && node neoviet360-backend/prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
