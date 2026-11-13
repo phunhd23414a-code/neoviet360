@@ -24,7 +24,8 @@ Backend serverless nằm tại `api/index.js` và sử dụng Express app trong
    ```
 
 4. **Thêm Environment Variables trên Vercel Dashboard**:
-   - DATABASE_URL
+   - `DATABASE_URL`: Supabase **Transaction pooler** URI, thường dùng port `6543` và có `pgbouncer=true`
+   - `DIRECT_URL`: Supabase **Session pooler** URI, thường dùng port `5432`
    - JWT_SECRET
    - FRONTEND_ORIGIN (ví dụ: `https://neoviet360.vercel.app`)
    - NODE_ENV=`production`
@@ -34,6 +35,10 @@ Backend serverless nằm tại `api/index.js` và sử dụng Express app trong
    ```bash
    npx prisma migrate deploy --schema=neoviet360-backend/prisma/schema.prisma
    ```
+
+Trong Supabase lấy cả hai URI tại **Connect → Connection string → ORMs/Prisma**.
+Không dùng URI host `db.<project-ref>.supabase.co:5432` làm `DATABASE_URL` trên Vercel
+vì Vercel serverless có thể không truy cập được host direct này.
 
 Sau lần cấu hình đầu tiên, các lần push GitHub tiếp theo sẽ tự động deploy
 cả frontend và API cùng project.
