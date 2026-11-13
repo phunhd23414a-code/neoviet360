@@ -15,7 +15,7 @@ const { errorHandler } = require("./middleware/errorHandler");
 const app = express();
 
 // Parse allowed origins from env var - support multiple origins for different deployments
-const allowedOrigins = (process.env.FRONTEND_ORIGIN || "http://localhost:5500,http://127.0.0.1:5500,https://neoviet360.vercel.app")
+const allowedOrigins = (process.env.FRONTEND_ORIGIN || "http://localhost:5500,http://127.0.0.1:5500")
   .split(",")
   .map((origin) => origin.trim());
 
@@ -26,6 +26,8 @@ const trustedOrigins = (process.env.TRUSTED_ORIGINS || "")
   .filter(Boolean);
 
 const allAllowedOrigins = [...new Set([...allowedOrigins, ...trustedOrigins])];
+const isTrustedVercelOrigin = (origin) =>
+  /^https:\/\/neoviet360(?:-[a-z0-9-]+)?\.vercel\.app$/i.test(origin);
 
 // CORS configuration - secure by default
 app.use(cors({
@@ -39,7 +41,9 @@ app.use(cors({
     }
     
     // Check against allowed list
-    if (allAllowedOrigins.includes(origin)) return callback(null, true);
+    if (allAllowedOrigins.includes(origin) || isTrustedVercelOrigin(origin)) {
+      return callback(null, true);
+    }
     
     // Log blocked origins for debugging
     console.warn(`CORS blocked for origin: ${origin}`);
