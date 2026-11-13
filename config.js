@@ -1,11 +1,17 @@
 // neoviet360/config.js
+const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+const isLocalDevelopment = hostname === 'localhost' || hostname === '127.0.0.1';
+const defaultApiBase = isLocalDevelopment
+  ? 'http://localhost:3001'
+  : (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3001');
+
 const CONFIG = {
   // Backend API configuration
-  API_BASE: 'http://localhost:3001', // Change to your backend URL when deploying
+  API_BASE: defaultApiBase,
   
   // Environment variables exposed to frontend
   ENV: {
-    API_URL: 'http://localhost:3001' // Used by utils/api-adapter.js
+    API_URL: defaultApiBase
   },
   
   STORAGE_KEYS: {

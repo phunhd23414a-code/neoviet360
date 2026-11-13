@@ -1,13 +1,12 @@
 # NeoViet 360 - Hướng Dẫn Deploy Lên Vercel
 
-## Đã Hoàn Thành ✅
-1. ✅ Migration Prisma lên Supabase Cloud
-2. ✅ Seed dữ liệu demo (user: admin@neoviet360.vn / password123)
-3. ✅ Cập nhật API adapter cho Vercel
+## Mô hình triển khai
 
-## Cần Thực Hiện (Deploy Manual)
+Frontend và backend được deploy trong **một Vercel project** từ thư mục gốc.
+Backend serverless nằm tại `api/index.js` và sử dụng Express app trong
+`neoviet360-backend/src/app.js`. Frontend gọi API cùng domain qua `/api/*`.
 
-### Bước 1: Deploy Backend lên Vercel
+### Cấu hình Vercel một lần
 
 1. **Cài Vercel CLI** (nếu chưa có):
    ```bash
@@ -19,47 +18,35 @@
    vercel login
    ```
 
-3. **Deploy Backend**:
+3. **Deploy từ thư mục gốc repository**:
    ```bash
-   cd neoviet360-backend
    vercel --prod
    ```
 
 4. **Thêm Environment Variables trên Vercel Dashboard**:
    - DATABASE_URL
    - JWT_SECRET
-   - FRONTEND_ORIGIN
+   - FRONTEND_ORIGIN (ví dụ: `https://neoviet360.vercel.app`)
+   - NODE_ENV=`production`
    - GEMINI_API_KEY (nếu có)
 
-5. **Copy URL backend** (ví dụ: `https://neoviet360-backend.vercel.app`)
-
-### Bước 2: Deploy Frontend lên Vercel
-
-1. **Tạo vercel.json cho frontend** (nếu chưa có):
-   ```json
-   {
-     "rewrites": [
-       { "source": "/(.*)", "destination": "/index.html" }
-     ]
-   }
-   ```
-
-2. **Deploy Frontend**:
+5. **Migration database (nếu Supabase vừa tạo lại)**:
    ```bash
-   vercel --prod
+   npx prisma migrate deploy --schema=neoviet360-backend/prisma/schema.prisma
    ```
 
-3. **Thêm Environment Variable**:
-   - API_URL = URL_backend_của_bạn
+Sau lần cấu hình đầu tiên, các lần push GitHub tiếp theo sẽ tự động deploy
+cả frontend và API cùng project.
 
 ## Kiểm Tra Sau Deploy
 
-1. Test login: `https://your-backend.vercel.app/api/auth/login`
+1. Health check: `https://your-frontend.vercel.app/health`
+2. Test login: `https://your-frontend.vercel.app/api/auth/login`
    ```json
    { "email": "admin@neoviet360.vn", "password": "password123" }
    ```
 
-2. Test accounts: `https://your-backend.vercel.app/api/accounts`
+3. Test accounts: `https://your-frontend.vercel.app/api/accounts`
 
 ## Troubleshooting
 
