@@ -15,7 +15,7 @@ const { errorHandler } = require("./middleware/errorHandler");
 const app = express();
 
 // Parse allowed origins from env var - support multiple origins for different deployments
-const allowedOrigins = (process.env.FRONTEND_ORIGIN || "http://localhost:5500,http://127.0.0.1:5500")
+const allowedOrigins = (process.env.FRONTEND_ORIGIN || "http://localhost:5500,http://127.0.0.1:5500,https://neoviet360.vercel.app")
   .split(",")
   .map((origin) => origin.trim());
 
