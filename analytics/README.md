@@ -27,4 +27,28 @@ The SQL files in `sql/` are read-only analysis queries. They do not modify appli
 the first version. It is safe to rerun and is suitable for a scheduled job
 until incremental loading is implemented.
 
+## Synthetic dataset
+
+Generate a local portfolio dataset:
+
+```powershell
+python src/data_generation/generate_dataset.py `
+  --users 100 `
+  --transactions-per-user 500 `
+  --months 24 `
+  --output-dir data/generated
+```
+
+The generated files are ignored by Git. To load them into isolated Supabase
+staging tables, install `requirements-data.txt`, set `DATABASE_URL`, and run:
+
+```powershell
+python src/pipeline/load_synthetic_staging.py `
+  --input-dir data/generated `
+  --confirm-staging
+```
+
+The loader only truncates and writes `analytics.staging_synthetic_*`; it does
+not modify `public.users` or `public.transactions`.
+
 Do not commit database credentials or exported personal data.
